@@ -1,63 +1,106 @@
-inputName.addEventListener('keyup', filterRows);
-inputUserName.addEventListener('keyup', filterRows);
+// Initialize and add the map
+//let map;
 
+//const filterInputName = document.getElementById('filterInputName');
+//const filterInputEmail = document.getElementById('filterInputEmail');
+const tableBody = document.getElementById('tableBody');
 
+  //criar a div que terá o mapa
+  const divMap = document.createElement('div');
+  divMap.id = 'map'
+  divMap.style.height = '50em';
+  divMap.style.width = '100%';
 
+let usersData = [];
+
+fetch('https://jsonplaceholder.typicode.com/users/')
+  .then(response => response.json())
+  .then(data => {
+    usersData = data;
+    renderTableRows(usersData);
+  });
+
+filterInputName.addEventListener('keyup', filterRows);
+//filterInputEmail.addEventListener('keyup', filterRows);
+
+function renderTableRows(data) {
+  let tableRows = '';
+
+  data.forEach(user => {
+    user['fullAddress'] = `${user.address.street}, ${user.address.suite} - ${user.address.city} | ${user.address.suite}, ZIP: ${user.address.zipcode}  `
+    //console.log(user)
+  });
+
+  //console.log('data', data)
+  data.forEach(user => {
+    tableRows += `
+      <tr >
+        <td>${user.id}</td>
+        <td>${user.name}</td>
+        <td>${user.email}</td>
+        <td>${user.username}</td>
+        <td>${user.website}</td>
+        <td>${user.address.geo.lat}, ${user.address.geo.lng}</td>
+        <td>${user.fullAddress}</td>
+        <td data-bs-toggle="tooltip" title="Ver no mapa">
+          <img src="https://cdn-icons-png.flaticon.com/512/7509/7509111.png"
+            height='25px' 
+            alt="Map Icon"
+            class="map-icon"
+            onclick="showMap(${user.address.geo.lat}, ${user.address.geo.lng}, '${user.name}')"
+          />
+        </td>
+      </tr>
+    `;
+  });
+
+  tableBody.innerHTML = tableRows;
+}
 
 function filterRows() {
-    const table = document.getElementById('users-table');
-    const linhas = table.getElementsByTagName('tr');
-
-    const valueName = inputName.value.toLowerCase();
-    const filterUserName = inputUserName.value.toLowerCase();
-
-    linhas.forEach(i => console.log(i))
+  const filterValueName = filterInputName.value.toLowerCase();
 
 
-  
-    /* for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      const cells = row.getElementsByTagName('td');
-      let shouldDisplay = false;
-  
-      if (valueName === '' && filterUserName === '') {
-        shouldDisplay = true;
-      } else {
-        const cell1Text = cells[0].textContent.toLowerCase();
-        const cell2Text = cells[1].textContent.toLowerCase();
-  
-        if (
-          cell1Text.indexOf(filterValue1) > -1 &&
-          cell2Text.indexOf(filterValue2) > -1
-        ) {
-          shouldDisplay = true;
-        }
-      }
-  
-      row.style.display = shouldDisplay ? '' : 'none';
-    } */
-  }
+  const filteredData = usersData.filter(user =>
+    user.name.toLowerCase().includes(filterValueName) ||
+    user.email.toLowerCase().includes(filterValueName) ||
+    user.fullAddress.toLowerCase().includes(filterValueName)
+  );
 
-// Fetch data from the API
-fetch('https://jsonplaceholder.typicode.com/users')
-    .then(response => response.json())
-    .then(data => {
-        const usersTable = document.getElementById('users-table');
-        const usersTableBody = usersTable.getElementsByTagName('tbody')[0];
+  console.log(filteredData)
 
-        data.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-            <td>${user.id}</td>
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td>${user.username}</td>
-            <td>${user.website}</td>
-            <td>${`${user.address.street}, ${user.address.suite} | ${user.address.suite}, ZIP: ${user.address.zipcode}  `}</td>
-        `;
-            usersTableBody.appendChild(row);
-        });
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+  renderTableRows(filteredData);
+}
+
+// Initialize and add the map
+let map;
+
+async function showMap(lat, long, name) {
+  const mainDiv = document.querySelector('#main');
+
+  // The location of Uluru
+  const position = { lat: parseFloat(lat), lng: parseFloat(long) };
+  // Request needed libraries.
+  //@ts-ignore
+  const { Map } = await google.maps.importLibrary("maps");
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+  console.log(`geo:`, position)
+  // The map, centered at Uluru
+  map = new Map(divMap, {
+    zoom: 5,
+    center: position,
+    mapId: "DEMO_MAP_ID",
+    //mapTypeId: google.maps.MapTypeId.SATELLITE // Set map type to satellite
+  });
+
+  // The marker, positioned at Uluru
+  new AdvancedMarkerElement({
+    map: map,
+    position: position,
+    title: name
+  });
+
+  mainDiv.appendChild(divMap);
+}
+
+//initMap();
