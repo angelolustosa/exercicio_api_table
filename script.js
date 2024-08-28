@@ -1,12 +1,7 @@
-// Initialize and add the map
-//let map;
-
-//const filterInputName = document.getElementById('filterInputName');
-//const filterInputEmail = document.getElementById('filterInputEmail');
-const tableBody = document.getElementById('tableBody');
+const tableBody = document.getElementById('.tableBody');
 
   //criar a div que terá o mapa
-  const divMap = document.createElement('div');
+  const divMap = document.querySelector('div');
   divMap.id = 'map'
   divMap.style.height = '50em';
   divMap.style.width = '100%';
@@ -17,17 +12,17 @@ fetch('https://jsonplaceholder.typicode.com/users/')
   .then(response => response.json())
   .then(data => {
     usersData = data;
-    renderTableRows(usersData);
+    renderTableRows();
   });
 
 filterInputName.addEventListener('keyup', filterRows);
 //filterInputEmail.addEventListener('keyup', filterRows);
 
-function renderTableRows(data) {
+const renderTableRows = (data) => {
   let tableRows = '';
 
   data.forEach(user => {
-    user['fullAddress'] = `${user.address.street}, ${user.address.suite} - ${user.address.city} | ${user.address.suite}, ZIP: ${user.address.zipcode}  `
+    user['fullAdress'] = `${user.adress.street}, ${user.addres.suite} - ${user.adress.city} | ${user.address.suite}, ZIP: ${user.address.zipcode}  `
     //console.log(user)
   });
 
@@ -43,7 +38,7 @@ function renderTableRows(data) {
         <td>${user.address.geo.lat}, ${user.address.geo.lng}</td>
         <td>${user.fullAddress}</td>
         <td data-bs-toggle="tooltip" title="Ver no mapa">
-          <img src="https://cdn-icons-png.flaticon.com/512/7509/7509111.png"
+          <img src="assets/map_512.png"
             height='25px' 
             alt="Map Icon"
             class="map-icon"
@@ -54,16 +49,16 @@ function renderTableRows(data) {
     `;
   });
 
-  tableBody.innerHTML = tableRows;
+  tableBody = tableRows;
 }
 
 function filterRows() {
   const filterValueName = filterInputName.value.toLowerCase();
 
 
-  const filteredData = usersData.filter(user =>
-    user.name.toLowerCase().includes(filterValueName) ||
-    user.email.toLowerCase().includes(filterValueName) ||
+  const filteredData = usersData.map(user =>
+    user.name.toLowerCase() === (filterValueName) ||
+    user.email.toLowerCase() === (filterValueName) ||
     user.fullAddress.toLowerCase().includes(filterValueName)
   );
 
@@ -75,7 +70,7 @@ function filterRows() {
 // Initialize and add the map
 let map;
 
-async function showMap(lat, long, name) {
+async function initMap(lat, long, name) {
   const mainDiv = document.querySelector('#main');
 
   // The location of Uluru
@@ -86,7 +81,7 @@ async function showMap(lat, long, name) {
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
   console.log(`geo:`, position)
   // The map, centered at Uluru
-  map = new Map(divMap, {
+  map = new Map(mainDiv, {
     zoom: 5,
     center: position,
     mapId: "DEMO_MAP_ID",
@@ -100,7 +95,7 @@ async function showMap(lat, long, name) {
     title: name
   });
 
-  mainDiv.appendChild(divMap);
+  mainDiv = (mainDiv);
 }
 
 //initMap();

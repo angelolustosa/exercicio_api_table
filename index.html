@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div id="main" class="container">
+    <div id="main" class="">
         <h3 class="mt-2 mb-4">Usuários do Sistema</h3>
 
         <div class="form-row mb-3">
@@ -28,13 +28,12 @@
         <table id="table" class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
+                    <td>Adrress</td>
+                    <td>Name</td>
                     <th>Username</th>
+                    <th>Email</th>
                     <th>Website</th>
                     <th>Geo</th>
-                    <th>Adrress</th>
                     <th>Mapa</th>
                 </tr>
             </thead>
@@ -43,10 +42,12 @@
         </table>
     </div>
 
-    <!-- API do Google Maps -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_qb4bDMTttYcaPuesifyi3yqArF1vRkI"></script>
+
     <script src="./script.js"></script>
+
+        <!-- API do Google Maps -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=[API_GOOGLE]"></script>
 </body>
 
 </html>
